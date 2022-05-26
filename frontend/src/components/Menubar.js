@@ -1,4 +1,5 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect,useState,useContext } from 'react'
+import {Store} from '../Store'
 import { Navbar, Nav, Dropdown,Container  } from 'rsuite';
 import { FaRegUserCircle} from 'react-icons/fa';
 import { AiOutlineHeart,AiOutlineShoppingCart} from 'react-icons/ai';
@@ -6,6 +7,9 @@ import { BiGitCompare} from 'react-icons/bi';
 import axios from 'axios'
 import {Link} from 'react-router-dom'
 const Menubar = () => {
+
+  const {state,dispatch} = useContext(Store)
+  console.log("ami menu theke aseci",state)
 
   let [logo,setLogo] = useState({}) 
 
@@ -16,6 +20,11 @@ const Menubar = () => {
     }   
     menu()
   },[])
+
+  let handleLogout = ()=>{
+    dispatch({type:'USER_LOGOUT'})
+    localStorage.removeItem('userInfo')
+  }
 
   return (
     <Container className='container'>
@@ -31,16 +40,38 @@ const Menubar = () => {
             <Nav.Item>Pages</Nav.Item>
             <Nav.Item>Blog</Nav.Item>
             <Nav.Item>Contacts</Nav.Item>
+            {!state.userInfo
+            &&
             <Nav.Item>
+             
               <Link to="/login">Signup / Login</Link>
 
             </Nav.Item>
+            }
+            
            
           </Nav>
           <Nav pullRight>
             <div className='navicon'>
 
-            <FaRegUserCircle className='icon'/>
+              {state.userInfo&&
+                <Dropdown title={<FaRegUserCircle className='icon'/>}>
+                <Dropdown.Item>{state.userInfo.name}</Dropdown.Item>
+                {state.userInfo.isVendor
+                ?
+                <Dropdown.Item><Link to="/dashboard">Go to Dashboard</Link></Dropdown.Item>
+                :
+                <Dropdown.Item><Link to="/vendor">Become A Vendor</Link></Dropdown.Item>
+                }
+                <Dropdown.Item>Download As...</Dropdown.Item>
+                <Dropdown.Item>Export PDF</Dropdown.Item>
+                <Dropdown.Item>Export HTML</Dropdown.Item>
+                <Dropdown.Item>Settings</Dropdown.Item>
+                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+              </Dropdown>
+              }
+
+        
             <AiOutlineHeart className='icon'/>
             <BiGitCompare className='icon'/>
             <span className='cart'>

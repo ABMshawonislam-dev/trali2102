@@ -39,11 +39,10 @@ bcrypt.hash(req.body.password, 10, function(err, hash) {
 app.post("/login",async (req,res)=>{
     console.log(req.body.email)
     const data = await User.find({email: req.body.email})
-    console.log(data)
     if(data[0]){
         bcrypt.compare(req.body.password, data[0].password, function(err, result) {
             if(result){
-                res.send({msg: "Account Found"})
+                res.send({data:data[0],msg:"Account Created Successfully"})
             }else{
                 res.send({msg: "Account Not Found"})
             }
@@ -53,6 +52,18 @@ app.post("/login",async (req,res)=>{
     }
     
 })
+
+app.put('/vendor/:id',(req,res)=>{
+        console.log(req.params.id)
+       User.findByIdAndUpdate(req.params.id,{isVendor:true},{ returnOriginal: false },function(err,docs){
+           if(err){
+               console.log(err)
+           }else{
+               res.send(docs)
+           }
+       })
+       
+})  
 
 app.get("/logo",function(req,res){
     res.send(logoData)

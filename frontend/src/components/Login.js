@@ -1,7 +1,12 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
+import {Store} from '../Store'
 import { Container,Form,ButtonToolbar,Button  } from 'rsuite';
+import {useNavigate} from 'react-router-dom'
+
 const Login = () => {
+        let navigate = useNavigate()
+        let {state,dispatch} = useContext(Store)
         let [email,setEmail] = useState("")
         let [password,setPassword] = useState("")
 
@@ -10,7 +15,12 @@ const Login = () => {
                 email: email,
                 password: password
             })
-            console.log(data.msg)
+
+            dispatch({type:'USER_LOGIN',payload:data.data})
+            localStorage.setItem('userInfo',JSON.stringify(data.data))
+            navigate('/')
+
+
         }
 
   return (
