@@ -59,7 +59,7 @@ const Menubar = () => {
                 <Dropdown.Item>{state.userInfo.name}</Dropdown.Item>
                 {state.userInfo.isVendor
                 ?
-                <Dropdown.Item><Link to="/dashboard">Go to Dashboard</Link></Dropdown.Item>
+                <Dropdown.Item><Link to="/admin">Go to Dashboard</Link></Dropdown.Item>
                 :
                 <Dropdown.Item><Link to="/vendor">Become A Vendor</Link></Dropdown.Item>
                 }
