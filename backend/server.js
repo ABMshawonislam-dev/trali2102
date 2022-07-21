@@ -10,6 +10,7 @@ const User = require('./model/usermodel.js')
 const Brand = require('./model/brandModel.js')
 const Cat = require('./model/catModel.js')
 const Product = require('./model/productModel.js')
+const Cupon = require('./model/cuponModel.js')
 var cors = require('cors')
 const app = express()
 
@@ -124,15 +125,15 @@ app.get("/deal",function(req,res){
 
 app.post("/products",function(req,res){
     console.log("hello")
-    console.log(req.body)
     let productInfo={
         name: req.body.name,
         price: req.body.price,
         description: req.body.description,
         brand: req.body.brand,
-        brandname: req.body.brandname,
         category: req.body.category,
-        categoryname: req.body.categoryname,
+        color: req.body.color,
+        size: req.body.size,
+        image: req.body.image,
         owner: req.body.owner,
     }
 
@@ -141,12 +142,55 @@ app.post("/products",function(req,res){
     res.send("hello")
 })
 
-app.get("/products",function(req,res){
-    res.send(productData)
+app.get("/products",async function(req,res){
+    let data = await Product.find({})
+    res.send(data)
 })
 
 app.get("/feature",function(req,res){
     res.send(featureData)
+})
+
+app.post('/cupon',(req,res)=>{
+    console.log(req.body)
+
+    let cuponInfo = {
+        cuponname: req.body.cuponname,
+        discountamount: req.body.discountamount,
+    }
+
+    const cupon = new Cupon(cuponInfo)
+    cupon.save()
+})
+
+app.get('/cupon/discount',async (req,res)=>{
+    // console.log("ami discount")
+    let data = await Cupon.find()
+    res.send(data)
+    // console.log(data)
+})
+
+app.get('/cupon/:cupon',async (req,res)=>{
+    let data = await Cupon.find({cuponname: req.params.cupon})
+    res.send(data)
+})
+
+
+
+app.get('/cuponlist',async (req,res)=>{
+    let data = await Cupon.find({})
+    res.send(data)
+})
+
+app.get('/relatedproduct/:brand',async (req,res)=>{
+    console.log(req.params.brand)
+   let data = await Product.find({brand:req.params.brand})
+//    console.log(data)
+   res.send(data)
+})
+app.get('/productdetails/:id',async (req,res)=>{
+   let data = await Product.findById(req.params.id)
+   res.send(data)
 })
 
 app.listen(8000,()=>{

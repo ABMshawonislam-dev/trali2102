@@ -1,11 +1,28 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {Panel} from 'rsuite'
 import {BsStarFill,BsStar,BsStarHalf,BsBag } from 'react-icons/bs';
+import { Store } from '../Store';
+import {Link} from 'react-router-dom'
 
 const Product = (props) => {
 
+  const {cartstate,cartdispatch} = useContext(Store)
   const [activeColor,setActivecolor] = useState("")
   const [activeSize,setActivesize] = useState("")
+  const {cart} = cartstate
+
+  const handleAddToCart = (product)=>{
+    const existingItem = cart.cartItems.find((item)=> item._id === product._id)
+
+    const quantity = existingItem ? existingItem.quantity + 1 : 1
+    cartdispatch({
+      type: 'ADD_TO_CART',
+      payload: {...product,quantity,color:activeColor,size:activeSize}
+    })
+
+  }
+
+  console.log()
 
   return (
     <div className='singleproduct'>
@@ -25,7 +42,12 @@ const Product = (props) => {
        </div>
         
        
-        <Panel header={props.heading}>
+        <Panel>
+          <h3>
+            
+              
+            <Link to={`/details/${props.product._id}`}>{props.heading}</Link>
+          </h3>
         <div className="productbox">
          <div className="productcolorbox">
             {props.color.map(item=>(
@@ -39,7 +61,7 @@ const Product = (props) => {
          </div>
        </div>
 
-       <span className='cart'>
+       <span className='cart' onClick={()=>handleAddToCart(props.product)}>
          <BsBag className='productcart'/>
        </span>
        <span className='price'>

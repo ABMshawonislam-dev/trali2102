@@ -10,6 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import Registration from "./components/Registration";
 import Login from "./components/Login";
 import Vendor from "./components/Vendor";
+import Cart from "./pages/Cart";
+import ProductDetails from "./components/ProductDetails";
 function App() {
   return (
    <>
@@ -21,6 +23,8 @@ function App() {
       <Route path="/login" element={<Login />}></Route>
       <Route path="/admin" element={<Dashboard />}></Route>
       <Route path="/vendor" element={<Vendor />}></Route>
+      <Route path="/cart" element={<Cart />}></Route>
+      <Route path="/details/:id" element={<ProductDetails />}></Route>
     </Routes>
   </BrowserRouter>
    </>

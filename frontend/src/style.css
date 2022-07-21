@@ -415,5 +415,78 @@
     padding: 10px;
 }
 
+.cartpage h2{
+    font-family: 'Hind', sans-serif;
+    font-size: 72px;
+    font-weight: 700;
+    color: #252525;
+    margin-top: 164px;
+    margin-bottom: 100px;
+}
+
+.cartpage .box{
+    display: flex;
+}
+
+.cartpage .details{
+    margin-left: 10px;
+}
+
+.cartpage .details h3{
+    margin-bottom: 23px;
+}
+
+.cartpage .quantity{
+    width: 95px;
+    padding: 12px 0;
+    border-radius: 50px;
+    border: 1px solid #666666;
+    text-align: center;
+}
+
+.cartpage .operator{
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.cartpage .number{
+    font-size: 16px;
+    font-weight: bolder;
+    margin: 0 10px;
+
+}
+
+
+.cartpage .shipping{
+    background: #EEF2F5;
+    padding: 60px;
+}
+
+.cartpage .shipping input{
+    margin-top: 10px;
+    border-radius: 50px;
+}
+
+.cartpage .shipping .box{
+    display: flex;
+    justify-content: space-between;
+}
+
+.cupon{
+    width: 580px;
+    position: relative;
+    margin-top: 100px;
+}
+
+.cupon input{
+    width: 100%;
+}
+
+.cupon button{
+    position: absolute;
+    top: 33px;
+    right: 0;
+}
+
 
 

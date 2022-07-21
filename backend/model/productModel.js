@@ -16,23 +16,27 @@ const productSchema = new Schema({
         required: true
     },
     brand:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'brand',
-        required: true
+        type: String,
+        required: true,
     },
-    brandname:{
+    image:{
         type: String,
         required: true,
     },
     category:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'category',
-        required: true
-    },
-    categoryname:{
         type: String,
         required: true,
     },
+    size:{
+        type: [String],
+        required: true
+    },
+    
+    color:{
+        type: [String],
+        required: true
+    },
+    
     owner:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',

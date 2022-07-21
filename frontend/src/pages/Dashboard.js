@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState,useRef, useMemo, useContext } from 'react'
-import { Container,Grid,Row,Col,Sidenav,Nav,Form,Button,ButtonToolbar,SelectPicker,Checkbox } from 'rsuite'
+import { Container,Grid,Row,Col,Sidenav,Nav,Form,Button,ButtonToolbar,SelectPicker,Checkbox,Input } from 'rsuite'
 import JoditEditor from "jodit-react";
 import {Store} from '../Store'
 const Dashboard = ({placeholder}) => {
@@ -8,8 +8,9 @@ const Dashboard = ({placeholder}) => {
   const [pro,setPro] = useState(true)
   const [brand,setBrand] = useState(false)
   const [cat,setCat] = useState(false)
-  const [productbrand,setProductBrand] = useState('')
-  const [productcat,setProductcat] = useState('')
+  const [cupon,setCupon] = useState(false)
+  const [productbrand,setProductbrand] = useState('')
+  const [productcategory,setProductcategory] = useState('')
   const [brandname,setBrandname] = useState([])
   const [brandnameselect,setBrandnameselect] = useState('')
   const [brandnameid,setBrandnameid] = useState('')
@@ -20,8 +21,12 @@ const Dashboard = ({placeholder}) => {
   const [productname,setProductname] = useState('')
   const [productprice,setProductprice] = useState('')
   const [productimg,setProductimg] = useState('')
+  const [productcolorarr,setProductcolorarr] = useState([])
   const editor = useRef(null)
 	const [content, setContent] = useState('')
+	const [cuponname, setCuponname] = useState('')
+	const [discountamount, setDiscountamount] = useState('')
+	const [cuponlist, setCuponlist] = useState([])
   
 
 
@@ -41,6 +46,13 @@ const Dashboard = ({placeholder}) => {
       setCat(true)
   }
 
+  let handleCupon = () => {
+      setPro(false)
+      setBrand(false)
+      setCat(false)
+      setCupon(true)
+  }
+
   let handleBrandSubmit = async ()=>{
     let {data} = await axios.post('http://localhost:8000/brand',{
       brand: productbrand
@@ -48,30 +60,16 @@ const Dashboard = ({placeholder}) => {
     console.log(data)
   }
 
-  let handleCatSubmit = async ()=>{
-    let {data} = await axios.post('http://localhost:8000/cat',{
-      category: productcat
-    })
-    console.log(data)
-  }
+  // let handleCatSubmit = async ()=>{
+  //   let {data} = await axios.post('http://localhost:8000/cat',{
+  //     category: productcat
+  //   })
+  //   console.log(data)
+  // }
 
  
 
-  let handleProductSubmit = async ()=>{
-
-    const {data} = await axios.post('http://localhost:8000/products',{
-      name: productname,
-      price: productprice,
-      brand: brandnameid,
-      brandname: brandnameselect,
-      category: categoryid,
-      categoryname: categoryname,
-      description: content,
-      owner: state.userInfo._id
-    })
-
-    // console.log(data)
-  }
+  
   let handleBrandChange = (e) => {
     setBrandnameid(JSON.parse(e.target.value)._id)
     setBrandnameselect(JSON.parse(e.target.value).brand)
@@ -82,6 +80,73 @@ const Dashboard = ({placeholder}) => {
   let handleCategoryChange = (e)=>{
     setCategoryname(JSON.parse(e.target.value).category)
     setCategoryid(JSON.parse(e.target.value)._id)
+  }
+
+  let sizeArr = []
+
+  let handleSmall = ()=>{
+    console.log(sizeArr.includes('sm'))
+    if(!sizeArr.includes('sm')){
+
+      sizeArr.push("sm")
+    }else{
+      if(sizeArr.indexOf('sm') != -1){
+        sizeArr.splice(sizeArr.indexOf('sm'),1)
+      } 
+    }
+    console.log(sizeArr)
+  }
+
+  let handleMedium = ()=>{
+    console.log(sizeArr.includes('md'))
+    if(!sizeArr.includes('md')){
+
+      sizeArr.push("md")
+    }else{
+      if(sizeArr.indexOf('md') != -1){
+        sizeArr.splice(sizeArr.indexOf('md'),1)
+      } 
+    }
+    console.log(sizeArr)
+  }
+
+  let handleLarge = ()=>{
+    console.log(sizeArr.includes('lg'))
+    if(!sizeArr.includes('lg')){
+
+      sizeArr.push("lg")
+    }else{
+      if(sizeArr.indexOf('lg') != -1){
+        sizeArr.splice(sizeArr.indexOf('lg'),1)
+      } 
+    }
+    console.log(sizeArr)
+  }
+
+  let handleProductColor = (e)=>{
+    if(e.split("").includes("#")){
+      console.log("# Not allow")
+    }else{
+      console.log(e.split(","))
+      setProductcolorarr(e.split(","))
+    }
+  }
+
+  let handleProductSubmit = async ()=>{
+
+    const {data} = await axios.post('http://localhost:8000/products',{
+      name: productname,
+      price: productprice,
+      brand: productbrand,
+      category: productcategory,
+      description: content,
+      color:productcolorarr,
+      size:sizeArr,
+      image: productimg,
+      owner: state.userInfo._id
+    })
+
+    // console.log(data)
   }
 
 
@@ -100,6 +165,22 @@ const Dashboard = ({placeholder}) => {
     }
     cat()
   },[])
+
+  let handleCupondetails = () => {
+    let {data} = axios.post('http://localhost:8000/cupon',{
+      cuponname: cuponname,
+      discountamount: discountamount 
+    })
+  }
+
+  useEffect(()=>{
+    async function cuponlist(){
+      let {data} = await axios.get('http://localhost:8000/cuponlist')
+      setCuponlist(data)
+    }
+    cuponlist()
+  
+  },[])
   return (  
             <Row className="show-grid" gutter={30}>
                 <Col xs={4}>
@@ -110,7 +191,7 @@ const Dashboard = ({placeholder}) => {
                     <Nav.Item eventKey="news" onClick={handleBrand}>Brand upload</Nav.Item><br/>
                     <Nav.Item eventKey="solutions" onClick={handleCategory}>Category Upload</Nav.Item><br/>
                     <Nav.Item eventKey="products">Products</Nav.Item><br/>
-                    <Nav.Item eventKey="about">About</Nav.Item><br/>
+                    <Nav.Item onClick={handleCupon} eventKey="about">Cupon</Nav.Item><br/>
                 </Nav>     
                 </Col>
                 <Col xs={20}>
@@ -121,6 +202,7 @@ const Dashboard = ({placeholder}) => {
                     <Form.ControlLabel>Product Name</Form.ControlLabel>
                     <Form.Control onChange={(e)=>setProductname(e)} name="name" placeholder="Product Name"/>
                   </Form.Group>
+               
                   <Form.Group controlId="name-1">
                     <Form.ControlLabel>Product price</Form.ControlLabel>
                     <Form.Control onChange={(e)=>setProductprice(e)} name="name" placeholder="Product price"/>
@@ -141,41 +223,27 @@ const Dashboard = ({placeholder}) => {
                   </Form.Group>
                   <Form.Group controlId="name-1">
                     <Form.ControlLabel>Product Brand</Form.ControlLabel>
-
-                      <select  onChange={handleBrandChange}>
-                        {brandname.map(item=>(
-                          <option value={JSON.stringify(item)}>{item.brand}</option>
-
-                        ))}
-                    
-                      </select>
-                    {/* <SelectPicker data={brandname} block /> */}
-                    {/* <Form.Control name="name" placeholder="Product Brand"/> */}
+                    <Form.Control onChange={(e)=>setProductbrand(e)} name="name" placeholder="Product Brand"/>
                   </Form.Group>
                   <Form.Group controlId="name-1">
                     <Form.ControlLabel>Product Category</Form.ControlLabel>
                     
-                    <select onChange={handleCategoryChange}>
-                        {catname.map(item=>(
-                          <option value={JSON.stringify(item)}>{item.category}</option>
-
-                        ))}
                     
-                      </select>
-                    {/* <Form.Control name="name" placeholder="Product Category"/> */}
+                    <Form.Control onChange={(e)=>setProductcategory(e)} name="name" placeholder="Product Category"/>
                   </Form.Group>
                   <Form.Group controlId="name-1">
                     <Form.ControlLabel>Product Color</Form.ControlLabel>
-                    <Form.Control onChange={(e)=>setProductcolor(e)} name="name" placeholder="Product Color"/>
+                    <Form.Control onChange={handleProductColor} name="name" placeholder="Product Color"/>
+                    {productcolorarr.map(item=>(
+                      <span style={{width:'20px',height:'20px',background:`#${item}`,display: 'inline-block',margin: '5px'}}></span>
+                    ))}
                   </Form.Group>
                   <Form.Group controlId="name-1">
                     <Form.ControlLabel>Product Size</Form.ControlLabel>
-                    <Checkbox> sm</Checkbox>
-                    <Checkbox> md</Checkbox>
-                    <Checkbox> lg</Checkbox>
-                    <Checkbox> xl</Checkbox>
-                    <Checkbox> xxl</Checkbox>
-                    {/* <Form.Control type="text" name="name" placeholder="Product Color"/> */}
+                    <Checkbox onChange={handleSmall}> sm</Checkbox>
+                    <Checkbox onChange={handleMedium}> md</Checkbox>
+                    <Checkbox onChange={handleLarge}> lg</Checkbox>
+                    
                   </Form.Group>
                  
                   <Form.Group>
@@ -187,7 +255,7 @@ const Dashboard = ({placeholder}) => {
                 </Form>
                 }
 
-                {brand &&
+                {/* {brand &&
                   <Form fluid>
                   <Form.Group controlId="name-1">
                     <Form.ControlLabel>Product Brand</Form.ControlLabel>
@@ -201,9 +269,9 @@ const Dashboard = ({placeholder}) => {
                     </ButtonToolbar>
                   </Form.Group>
                 </Form>
-                }
+                } */}
 
-{cat &&
+{/* {cat &&
                   <Form fluid>
                   <Form.Group controlId="name-1">
                     <Form.ControlLabel>Product Category</Form.ControlLabel>
@@ -217,6 +285,19 @@ const Dashboard = ({placeholder}) => {
                     </ButtonToolbar>
                   </Form.Group>
                 </Form>
+                } */}
+
+                {cupon&&
+                  <>
+                    <Input onChange={(e)=>setCuponname(e)} placeholder="Cupon Name" />
+                  <Input onChange={(e)=>setDiscountamount(e)} placeholder="Discount amount" />
+                  <Button onClick={handleCupondetails} color="violet" appearance="primary">Submit</Button>
+                  {cuponlist.map(item=>(
+                    <h1>{item.cuponname} --- {item.discountamount}<Button color="red" appearance="primary">Delete</Button></h1>
+
+                  ))}
+
+                  </>
                 }
                 </Col>
             </Row>

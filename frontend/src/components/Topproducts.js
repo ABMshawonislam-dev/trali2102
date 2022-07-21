@@ -36,13 +36,18 @@ const Topproducts = () => {
 
         <Grid>  
             <Row className="show-grid" gutter={30}>
-                {products.map(item=>(
+                {/* {products.map(item=>(
 
                     <Col xs={6}>
                         <Product img={item.image} heading={item.name} rating={item.rating} brand={item.brand} color={item.colors} size={item.sizes} price={item.price}/>
                     </Col>
-                ))}
-              
+                ))} */}
+              {products.map(item=>(
+                   <Col xs={6}>
+                    <Product product={item} img={item.image} heading={item.name} brand={item.brand} color={item.color} size={item.size} price={item.price}/>
+                    {/* <h1>ALSDKJALDS</h1> */}
+                    </Col>
+              ))}
                 
             </Row>
         </Grid>
