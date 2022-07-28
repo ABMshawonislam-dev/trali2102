@@ -14,6 +14,13 @@ const Cupon = require('./model/cuponModel.js')
 var cors = require('cors')
 const app = express()
 
+const fs  = require('fs')
+const multer  = require('multer')
+const Image = require('./model/imageUpload.js')
+var path = require('path');
+
+
+
 mongoose.connect('mongodb+srv://trali:trali123@cluster0.gboyg.mongodb.net/trali?retryWrites=true&w=majority',()=>{
     console.log("DB Connected")
 })
@@ -21,6 +28,41 @@ mongoose.connect('mongodb+srv://trali:trali123@cluster0.gboyg.mongodb.net/trali?
 app.use(cors())
 app.use(express.json())
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+  })
+
+  const upload = multer({ storage: storage })
+
+
+  app.post('/imageupload', upload.single('avatar'),async function (req, res) {
+    // console.log(req.body)
+    var obj = {
+        image: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename))
+    }
+
+    // console.log(fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)))
+    // console.log(fs.readFileSync(path.join(__dirname)))
+
+    let img = new Image(obj)
+    await img.save().then(()=>{
+        console.log("asdasd")
+    }).catch((err)=>{
+        console.log(err)
+    
+  }) 
+
+
+  })
+app.get('/imageupload', async function (req, res) {
+  let data = await Image.find({})
+  res.send(data)
+})
 app.get('/', function (req, res) {
   res.send('Hello World')
 })

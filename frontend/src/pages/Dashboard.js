@@ -222,6 +222,10 @@ const Dashboard = ({placeholder}) => {
                     <Form.Control onChange={(e)=>setProductimg(e)} name="name" placeholder="Product Image"/>
                   </Form.Group>
                   <Form.Group controlId="name-1">
+                    <Form.ControlLabel>Product Image</Form.ControlLabel>
+                    <Form.Control type="file" name="name" placeholder="Product Image"/>
+                  </Form.Group>
+                  <Form.Group controlId="name-1">
                     <Form.ControlLabel>Product Brand</Form.ControlLabel>
                     <Form.Control onChange={(e)=>setProductbrand(e)} name="name" placeholder="Product Brand"/>
                   </Form.Group>
